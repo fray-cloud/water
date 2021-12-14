@@ -2,19 +2,18 @@ import cv2
 import numpy as np
 
 class Camera:
-    def __init__(self, rtsp, camera_name):
+    def __init__(self):
+        self.is_alive = False
+
+    def start(self, rtsp, camera_name):
         self.rtsp = rtsp
         self.camera_name = camera_name
-        # default image
-        print(f'starting cam ..[{self.camera_name}] : {self.rtsp}')
 
-        self.start()
-        self.get_frame()
-
-    
-    def start(self):
-        self.cap = cv2.VideoCapture(self.rtsp)
-        self.is_alive, self.default_image = self.cap.read()
+        if not self.is_alive:
+            self.cap = cv2.VideoCapture(self.rtsp)
+            self.is_alive, self.default_image = self.cap.read()
+        
+        return self.is_alive
 
     def end(self):
         self.cap.release()

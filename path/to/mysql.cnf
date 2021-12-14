@@ -1,0 +1,6 @@
+[client]
+database = "water_test"
+# host = "10.0.0.190" default localhost
+# port = "3306"
+user = "testuser"
+password = "1234"
