@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row border-bottom">
+    <div class="col-md-12">
+         <div class="d-flex justify-content-between">
+             <h2 class="text-left">cam-{{camera.id}}</h2>
+             <button type="button" class="btn btn-inverse-danger ftm-fw mb-1">삭제</button>
+         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="row mt-1">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <p class="card-title mt-2 mb-0">카메라 정보</p>
+                            <button type="button" class="btn btn-inverse-info btn-sm ftm-fw m-1" onclick="location.href='{% url 'app_camera:setting' camera.id %}'">수정</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>IP</th>
+                                        <th>PORT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>{{camera.camera_ip}}</th>
+                                        <th>{{camera.camera_port}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <p class="card-title mt-2 mb-0">이벤트 정보</p>
+                            <button class="btn btn-inverse-info btn-sm mb-2">수정</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>감지</th>
+                                        <th>시간</th>
+                                        <th>결과</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>선</th>
+                                        <th>{{interval.line_interval}} 초</th>
+                                        <th><label class="badge badge-info m-0">'</label></th>
+                                    </tr>
+                                    <tr>
+                                        <th>색상</th>
+                                        <th>{{interval.color_interval}} 초</th>
+                                        <th><label class="badge badge-info m-0">'</label></th>
+                                    </tr>
+                                    <tr>
+                                        <th>문자</th>
+                                        <th>{{interval.text_interval}} 초</th>
+                                        <th><label class="badge badge-info m-0">'</label></th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-md-7">
+        <div class="row mt-1">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <p class="card-title mt-2 mb-0">화면 영역 정보</p>
+                            <div class="btn-group mb-2" role="group">
+                                <button class="btn btn-outline-secondary btn-sm" id="color_form">선</button>
+                                <button class="btn btn-outline-secondary btn-sm" id="line_form">색상</button>
+                                <button class="btn btn-outline-secondary btn-sm" id="text_form">문자</button>
+                            </div>
+                            <button class="btn btn-inverse-info btn-sm mb-2">수정</button>
+                        </div>
+                        <img src="{{media.camera_capture}}" class="img-fluid" alt="roi">
+                        <div class="table table-hover">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>좌표</th>
+                                        <th>너비</th>
+                                        <th>높이</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>({{roi.roi_x}},{{roi.roi_y}})</th>
+                                        <th>{{roi.roi_w}}</th>
+                                        <th>{{roi.roi_h}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+{% endblock javascripts %}
