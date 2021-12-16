@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class CameraSetting(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     camera_name = models.TextField(default='', max_length=255, verbose_name='카메라 이름')
     camera_id = models.TextField(default='', max_length=255, verbose_name='카메라 아이디')
     camera_pw = models.TextField(default='', max_length=255, verbose_name='카메라 비밀번호')

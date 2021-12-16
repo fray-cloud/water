@@ -1,4 +1,5 @@
 from django import forms
+from ..models import CameraSetting
 
 class CameraForm(forms.ModelForm):
     camera_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -9,6 +10,5 @@ class CameraForm(forms.ModelForm):
     camera_url = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
-        from ..models import CameraSetting
         model = CameraSetting
         fields = ['camera_name', 'camera_id', 'camera_pw', 'camera_ip', 'camera_port', 'camera_url', ]

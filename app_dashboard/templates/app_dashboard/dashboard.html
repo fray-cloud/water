@@ -17,7 +17,7 @@
               <div class="col-md-12">
                 <div class="d-flex justify-content-between border-bottom">
                   <h5 class="card-title mt-2 ml-2 mb-0 font-weight-bold">
-                    <a href="{% url 'app_camera:detail' cam.id %}">
+                    <a href="{% url 'app_camera:camera_detail' cam.id %}">
                       {{cam.id}}번 카메라
                     </a>
                   </h5>
@@ -91,111 +91,6 @@
   </div>
 </div>  
 
-
-
-{% comment %}
- <div class="row">
-  <div class="col-md-12">
-
-    <div class="row">
-      <div class="col md-2">
-      </div>
-      <div class="col-md-8">
-        <div class="card">
-          {% for cam in camera %}
-          <div class="card-body">
-            <div class="card-title mb-1">
-              <div class="row">
-                <div class="col-md-12 mb-2">
-                  <h5 class="font-weight-bold">카메라{{cam.id}}</h5>
-                </div>
-              </div>
-              <input type="hidden" name="suuid" id="suuid" value="H264_AAC2">
-              <input type="hidden" name="port" id="port" value="8083">
-              <input type="hidden" id="localSessionDescription" readonly="true">
-              <input type="hidden" id="remoteSessionDescription">
-
-              <div id="remoteVideos">
-                <video id="videoElem" autoplay muted controls></video>
-              </div>
-              <div class="row">
-                <div class="col-md-4 m-0">
-                  <p class="text-muted m-0">색상</p>
-                  <div class="container border bg-white">
-                    <div class="row flex-nowrap">
-                      <div class="col-md-4" id="color-bg-info{{cam.id}}">　</div>
-                      <div class="col-md-4" id="color-bg-success{{cam.id}}">　</div>
-                      <div class="col-md-4" id="color-bg-danger{{cam.id}}">　</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 m-0">
-                  <p class="text-muted m-0">선</p>
-                  <div class="container border bg-white">
-                    <div class="row flex-nowrap">
-                      <div class="col-md-4 text-center flex-nowrap" id="text-bg-info{{cam.id}}">　</div>
-                      <div class="col-md-4 text-center flex-nowrap" id="text-bg-success{{cam.id}}">　</div>
-                      <div class="col-md-4 text-center flex-nowrap" id="text-bg-danger{{cam.id}}">　</div>
-
-
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 m-0">
-                  <p class="text-muted m-0">문자</p>
-                  <div class="container border bg-white">
-                    <div class="row flex-nowrap">
-                      <div class="col-md-4 text-center flex-nowrap" id="text-bg-info{{cam.id}}">0</div>
-                      <div class="col-md-4 text-center flex-nowrap" id="text-bg-success{{cam.id}}">12</div>
-                      <div class="col-md-4 text-center flex-nowrap" id="text-bg-danger{{cam.id}}">25</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="col md-2">
-      </div>
-    </div>
-
-  </div>
-  <div class="col-md-6" style="display:none;">
-    <div class="card mb-2">
-      <div class="card-body">
-        <div class="chartjs-size-monitor">
-          <div class="chartjs-size-monitor-expand">
-            <div class=""></div>
-          </div>
-          <div class="chartjs-size-monitor-shrink">
-            <div class=""></div>
-          </div>
-        </div>
-        <h4 class="card-title">Color chart</h4>
-        <canvas id="colorChart" width="471" height="235" style="display: block; width: 471px; height: 235px;"
-          class="chartjs-render-monitor"></canvas>
-      </div>
-    </div>
-    <div class="card mb-2">
-      <div class="card-body">
-        <div class="chartjs-size-monitor">
-          <div class="chartjs-size-monitor-expand">
-            <div class=""></div>
-          </div>
-          <div class="chartjs-size-monitor-shrink">
-            <div class=""></div>
-          </div>
-        </div>
-        <h4 class="card-title">Line chart</h4>
-        <canvas id="lineChart" width="471" height="235" style="display: block; width: 471px; height: 235px;"
-          class="chartjs-render-monitor"></canvas>
-      </div>
-    </div>
-  </div>
-</div> 
- {% endcomment %}
 
 {% endblock content %}
 

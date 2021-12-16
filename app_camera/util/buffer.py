@@ -17,8 +17,10 @@ class Camera:
 
     def end(self):
         self.cap.release()
+        self.is_alive = False
 
     def save(self, path, image):
+        print(path)
         cv2.imwrite(path, image)
         return path
 
@@ -41,18 +43,20 @@ class Camera:
 
 
 if __name__ == '__main__':
+    from datetime import datetime
     rtsp = 'rtsp://admin:qwer1234@10.0.0.226:554/Streaming/Channels/101'
-    cam = Camera(rtsp, 'cam')
+    cam = Camera()
 
     # 1. default
     # image = cam.get_frame()
     # cv2.imshow('result', image)
     # cv2.waitKey()
     # cv2.destroyAllWindows()
-
+    cam.start(rtsp, 'cam')
     # 2. loop
     while True:
         image = cam.get_frame()
+        cv2.putText(image, f'test {datetime.now()}', (10, 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,5), 1)
         cv2.imshow('loop', image)
         if cv2.waitKey(1) == 27:
             break
