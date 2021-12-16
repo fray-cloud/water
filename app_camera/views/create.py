@@ -12,3 +12,9 @@ class CameraCreateView(CreateView):
 
     def get_success_url(self):
         return resolve_url('app_camera:detail', self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super(CameraCreateView, self).get_context_data(**kwargs)
+        context['info'] = '카메라 정보를 새로 등록합니다.'
+
+        return context

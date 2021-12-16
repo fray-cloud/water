@@ -15,9 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls.conf import include
+from app_dashboard.views import dashboard
 from .api import api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', api.urls)
+    path('api/', api.urls),
+    path('settings/', include('app_camera.urls')),
+    path('', dashboard, name='dashboard'),
+    # TODO update list
+    # path('settings/', include('app_event.urls')),
+    # path('detect/', include('app_color.urls')),
+    # path('detect/', include('app_line.urls')),
+    # path('detect/', include('app_pattren.urls')),
+    # path('detect/', include('app_text.urls')),
 ]

@@ -39,7 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'app_camera.apps.AppCameraConfig',
+    'app_event.apps.AppEventConfig',
+    'app_dashboard.apps.AppDashboardConfig',
+
+    # install
     'ninja',
 ]
 
