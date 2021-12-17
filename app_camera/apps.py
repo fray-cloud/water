@@ -13,17 +13,18 @@ class AppCameraConfig(AppConfig):
     def get_camera_info(self):
         from .models import CameraSetting
         get_dict = dict()
-        cam_dict = dict()
 
         get = CameraSetting.objects.all()
         for cam in get:
             name = cam.camera_name
             rtsp = str(cam)
 
-            cam_dict['name'] = name
-            cam_dict['rtsp'] = rtsp
+            dic = {
+                'name' : name,
+                'rtsp' : rtsp,
+            }
 
-            get_dict[f'{cam.id}'] = cam_dict
+            get_dict[f'{cam.id}'] = dic
 
         return get_dict
 

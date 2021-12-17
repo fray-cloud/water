@@ -43,9 +43,9 @@ def responseOfNeighbors(neighbors):
 def loadDataset(train_value:dict, filename2, training_feature_vector=[], test_feature_vector=[]):
     for train_color, values in train_value.items():
         for val in values:
-            red = val.red
-            green = val.green
-            blue = val.blue
+            red = int(val['red'])
+            green = int(val['green'])
+            blue = int(val['blue'])
             training_feature_vector.append([red, green, blue, train_color])
     
     with open(filename2) as csvfile:

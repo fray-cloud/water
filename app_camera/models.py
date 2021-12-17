@@ -21,5 +21,5 @@ class CameraSetting(models.Model):
         return f'rtsp://{self.camera_id}:{self.camera_pw}@{self.camera_ip}:{self.camera_port}/{self.camera_url}'
 
 class CameraCapture(models.Model):
-    camera_id = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
+    camera = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
     camera_capture = models.ImageField(null=True, verbose_name='카메라 캡쳐', upload_to='capture/')

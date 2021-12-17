@@ -10,8 +10,10 @@ class CameraUpdateView(UpdateView):
     template_name = 'app_camera/camera_form.html'
     
     def get_success_url(self):
-        return resolve_url('app_camera:detail', self.kwargs['pk'])
+        return resolve_url('app_camera:camera_detail', self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):
         context = super(CameraUpdateView, self).get_context_data(**kwargs)
         context['info'] = '카메라 정보를 수정 합니다.'
+
+        return context

@@ -6,7 +6,7 @@
 <div class="row border-bottom">
     <div class="col-md-12">
          <div class="d-flex justify-content-between">
-             <h2 class="text-left">cam-{{camera.id}}</h2>
+             <h2 class="text-left">cam-{{camera.camera_name}}</h2>
              <button type="button" class="btn btn-inverse-danger ftm-fw mb-1">삭제</button>
          </div>
     </div>
@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <p class="card-title mt-2 mb-0">카메라 정보</p>
-                            <button type="button" class="btn btn-inverse-info btn-sm ftm-fw m-1" onclick="location.href='{% url 'app_camera:setting' camera.id %}'">수정</button>
+                            <button type="button" class="btn btn-inverse-info btn-sm ftm-fw m-1" onclick="location.href='{% url 'app_camera:camera_update' camera.id %}'">수정</button>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover">

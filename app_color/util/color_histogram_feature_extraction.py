@@ -6,9 +6,7 @@ from tqdm import tqdm
 if __name__ != '__main__':
     from django.conf import settings
 
-# from ..models import ColorDataSet
-# from ..models import TrainColor
-# from ...config.util import CMD_Colors
+import time
 
 def color_histogram_of_test_image(test_src_image, path):
 
@@ -116,7 +114,6 @@ def image_save_path():
 
 def get_training_value():
     train_dict = dict()
-    
     path_dict = image_save_path()
     for key, values in path_dict.items():
         train_list = list()
@@ -124,7 +121,6 @@ def get_training_value():
             train_data = color_histogram_of_training_image(path)
             train_list.append(train_data)
         train_dict[key] = train_list
-
     return train_dict
 
 

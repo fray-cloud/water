@@ -16,38 +16,43 @@ def get_frame(request, camera_id :int):
     for cam, rtsp, name in AppCameraConfig.camera_list:
         if name == cam_name:
             data = cam.q.get()
-
+    print(data)
     if len(data) == 0 :
-        print('data missing')
+        print('camera data missing')
+        return {'is_saved' : False}
+
+    is_alive = data['is_alive']    
+    if not is_alive:
+        print(f'is_alive : {is_alive}')
         return {'is_saved' : False}
         
-    else:
-        is_alive = data['is_alive']
-        if not is_alive:
-            print(f'is_alive : {is_alive}')
-            return {'is_saved' : False}
-
-        image = data['image']
-        path = os.path.join(settings.MEDIA_ROOT, 'capture', f'capture_{data["name"]}.jpg')
-        cv2.imwrite(path, image)
-
-        try:
-            obj = CameraCapture.objects
-            obj = obj.filter(camera_id=camera_id)
-            obj.update(
-                camera_capture = path
-            )
-            
-        except:
-            obj.create(
-                camera_id = camera_id,
-                camera_capture = path,
-            )
-        info = dict()
-        info['is_saved'] = True
-        path = os.path.join(settings.MEDIA_URL, 'capture', f'capture_{data["name"]}.jpg')
-        info['path'] = path
-        return info
+    image = data['image']
+    path = os.path.join(settings.MEDIA_ROOT, 'capture', f'capture_{data["name"]}.jpg')
+    cv2.imwrite(path, image)
+    path = os.path.join(settings.MEDIA_URL, 'capture', f'capture_{data["name"]}.jpg')
+    try:
+        print('1')
+        obj = CameraCapture.objects
+        print('2')
+        sub = obj.filter(camera_id=camera_id)
+        if len(sub) == 0:
+            raise 'empty query'
+        sub.update(
+            camera_capture = path
+        )
+        print('4')
+    except:
+        print('5')
+        obj.create(
+            camera_id = camera_id,
+            camera_capture = path,
+        )
+        print('6')
+    info = dict()
+    info['is_saved'] = True
+    
+    info['path'] = path
+    return info
 
 
 @router.get('/check_time')

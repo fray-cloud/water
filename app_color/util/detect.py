@@ -1,3 +1,4 @@
+import cv2
 from .color_histogram_feature_extraction import get_training_value, color_histogram_of_test_image
 from .knn_classifier import main
 
@@ -16,11 +17,16 @@ class Color:
         for roi in rois:
             x, y, w, h = roi
             roi_image = image[y:h + y, x:w + x]
+            #cv2.imwrite(f'test_color_{h}.jpg', roi_image)
             roi_images.append(roi_image)
+
+        red = 0
+        blue = 0
+        green = 0
 
         for img in roi_images:
             self.testing(img)
-            prediction = main(get_training_value, self.TESTING_PATH)
+            prediction = main(get_training_value(), self.TESTING_PATH)
             if prediction == 'red':
                 red = red + 1
             elif prediction == 'blue':
