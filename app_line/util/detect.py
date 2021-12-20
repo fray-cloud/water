@@ -1,83 +1,96 @@
 import numpy as np
 import cv2
-import math
-import logging
-import numpy as np
 
 class Line:
-    CANNY_THRESHOLD_1 = 130
-    CANNY_THRESHOLD_2 = 150
-    IMAGE_SIZE = (600, 600)
 
-    #connection
-    NOT_CONNECTION = -1
-    NAME = '__main__'
-    logger = logging.getLogger(__name__)
-    logger_file = logging.getLogger('detect_file')
-    logger.debug('...starting line recognition')
+    @staticmethod
+    def gaussianBlur(image, gaussian_ksize, gaussian_sigmaX):
+        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        blur = cv2.GaussianBlur(gray, gaussian_ksize, gaussian_sigmaX)
+        return blur
 
-    def get_line(self, image):
-        gray = cv2.cvtColor(image.copy(), cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, self.CANNY_THRESHOLD_1, self.CANNY_THRESHOLD_2)
-        if __name__ == self.NAME:
-            cv2.imshow("edges", edges)
-        try:
-            lines = cv2.HoughLinesP(edges, 1, math.pi/1, 70, None, 2, 1000)
-        except:
-            return []
+    @staticmethod
+    def canny(gaussian_blur, canny_threashold1, canny_threashold2):
+        canny = cv2.Canny(gaussian_blur, canny_threashold1, canny_threashold2)
+        return canny
 
-        return lines
-
-    def get_length(self, lines, image):
+    @staticmethod
+    def getLine(canny, theta, hough_threshold, hough_minLineLength):
+        if theta != 0:
+            theta = np.pi / theta
+        else:
+            theta = 0.01
+        lines = cv2.HoughLinesP(canny, 1, theta, hough_threshold, minLineLength=hough_minLineLength)
         if lines is None:
             return 0
-        temp = 0
-        for i in range(len(lines)):
 
-            x1 = lines[i][0][0]
-            y1 = lines[i][0][1]
-            x2 = lines[i][0][2]
-            y2 = lines[i][0][3]
+        y0 = list()
+        y1 = list()
+        
+        for i in lines:
+            i = i[0]
+            y0.append(i[1])
+            y1.append(i[3])
 
-            dot1 = (x1,y1)
-            dot2 = (x2,y2)
-            length: np.intc = y1 - y2
-            if (i != 0) and  lines[i - 1][0][1] - lines[i - 1][0][3] < length:
-                if __name__ == self.NAME:
-                    cv2.line(image, dot1, dot2, (255,0,0), 2)
-                temp = lines[i - 1][0][1] - lines[i - 1][0][3]
-            else:
-                if __name__ == self.NAME:
-                    cv2.line(image, dot1, dot2, (0,225,0), 2)
-        if temp != 0:
-            length = temp
+        y0.sort()
+        y1.sort()
 
+        y0 = y0[0]
+        y1 = y1[len(lines) - 1]
+        length = y1 - y0
+        length = round(length/canny.shape[0] * 100, 2)
         return length
 
-    def line(self, image,  roi):
+    @staticmethod
+    def main(image, roi, gaussian_ksize, gaussian_sigmaX, canny_threashold1, canny_threashold2, theta, hough_threshold, hough_minLineLength=10):
         x, y, w, h = roi
-
-        roi_image = image[y:h + y, x:w + x]
-        
-        copyed_image = image.copy()
-        print(f"shape ** {roi_image.shape}")
-        lines = self.get_line(roi_image)
-        length = self.get_length(lines, roi_image)
-        if __name__ == self.NAME:
-            cv2.rectangle(image, (x,y), (w,h), (255,0,0), thickness=2)
-            cv2.imshow("image_result", image)
+        image = image[y:y+h, x:x+w]
+        blur = Line.gaussianBlur(image, gaussian_ksize, gaussian_sigmaX)
+        canny = Line.canny(blur, canny_threashold1, canny_threashold2)
+        length = Line.getLine(canny, theta, hough_threshold, hough_minLineLength)
 
         JSON = {
-            "HEIGHT" : int(h),
-            "LENGTH": int(length),
-            # "AVG": int(mean)
+            'LENGTH' : length
         }
-        cv2.imwrite(f'line{roi[3]}.jpg', roi_image)
-        self.logger_file.info(f'success line : {length}')
 
-        # line_log.create(
-        #     camera_line_log_id = id,
-        #     line_length = length,
-        #     log_date=datetime.now()
-        # )
         return JSON
+
+
+
+if __name__ == '__main__':
+    import time
+    ksize = (5,5)
+    sigmaX = 0
+
+    c_th1 = 50
+    c_th2 = 100
+
+    theta = 0
+    h_th = 50
+    min_line_lenght = 2
+    
+    
+    cap = cv2.VideoCapture('rtsp://admin:qwer1234@10.0.0.226:554/Streaming/Channels/101')
+    time.sleep(2)
+    ret, image = cap.read()
+    roi = cv2.selectROI('roi', image, False, False)
+    # cv2.destroyWindow('roi')
+
+    while True:
+
+        ret, image = cap.read()
+        if not ret:
+            cap = cv2.VideoCapture('rtsp://admin:qwer1234@10.0.0.226:554/Streaming/Channels/101')
+            continue
+        
+        value = Line.main(image, roi, ksize, sigmaX, c_th1, c_th2, theta, h_th, min_line_lenght)
+        cv2.putText(image, str(value['LENGTH']), (10, 60), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 1)
+        
+        cv2.imshow('result', image)
+
+        if cv2.waitKey(10) & 0xFF == ord('q'):
+            break
+    
+    cv2.destroyAllWindows()
+
+    
