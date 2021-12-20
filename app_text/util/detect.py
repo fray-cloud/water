@@ -5,11 +5,6 @@ from paddleocr import PaddleOCR
 
 
 class Text:
-    logger = logging.getLogger(__name__)
-    logger_file = logging.getLogger('detect_file')
-    logger.debug('...starting text recognition')
-    NOT_CONNECTION = -1
-
     # paddleocr
     ocr = PaddleOCR(use_gpu=False, lang='en')
     
@@ -43,18 +38,18 @@ class Text:
     def text(self, image, roi):
         x, y, w, h = roi
         roi_image = image[y:h + y, x:w + x]
+        roi_image = cv2.resize(roi_image, (0,0), fx=1.3, fy=1.3)
         cv2.imwrite(f'text{roi[3]}.jpg', roi_image)
         result = self.ocr.ocr(roi_image, cls=True)
         
         text_list = list()
-        for line in result:
-            print(line)
-            text_list.append(line[1][0])
+        for text in result:
+            print(text)
+            text_list.append(text[1][0])
         
         JSON = {
             'text_rec': text_list,
         }
-        self.logger_file.info(f'success text : {text_list}')
 
         return JSON
 

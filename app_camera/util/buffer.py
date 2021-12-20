@@ -44,6 +44,7 @@ class Camera:
 
 if __name__ == '__main__':
     from datetime import datetime
+    import time
     rtsp = 'rtsp://admin:qwer1234@10.0.0.226:554/Streaming/Channels/101'
     cam = Camera()
 
@@ -53,6 +54,10 @@ if __name__ == '__main__':
     # cv2.waitKey()
     # cv2.destroyAllWindows()
     cam.start(rtsp, 'cam')
+    image = cam.get_frame()
+    time.sleep(1)
+    rois = cv2.selectROIs('rois', image, False, False)
+    print(rois)
     # 2. loop
     while True:
         image = cam.get_frame()
