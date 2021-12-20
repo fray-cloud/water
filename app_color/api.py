@@ -7,7 +7,7 @@ router = Router()
 color = Color()
 
 
-@router.get('/result/{camera_id}')
+@router.get('/result/{camera_id}', tags=['color', 'detect'])
 def get_color_result(request, camera_id:int):
     from app_camera.apps import AppCameraConfig
     try:
@@ -16,9 +16,10 @@ def get_color_result(request, camera_id:int):
         return {'is_saved' : False}
     
     try:
-
         roi_object = ColorROIControl.objects
         roi_control = roi_object.filter(camera_id=camera_id)
+        if len(roi_control) == 0:
+            raise f'query empty {roi_control}'
     except:
         roi_object.create(camera_id=camera_id, color_select='red')
         roi_object.create(camera_id=camera_id, color_select='green')

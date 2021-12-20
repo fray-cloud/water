@@ -11,7 +11,6 @@ class CameraDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         from ..api import get_frame
         json = get_frame(request, self.kwargs['pk'])
-        print(json)
         return super().get(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):

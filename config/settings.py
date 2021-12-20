@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'app_camera.apps.AppCameraConfig',
     'app_event.apps.AppEventConfig',
     'app_dashboard.apps.AppDashboardConfig',
+    'app_color.apps.AppColorConfig',
+    'app_line.apps.AppLineConfig',
+    'app_text.apps.AppTextConfig',
 
     # install
     'ninja',

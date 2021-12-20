@@ -117,40 +117,52 @@
   }
   setInterval(event_ping, 10000);
 
-  async function event_motion_line() {
-      $.ajax({
-        "url": "recognitions/line",
-        "type": "get",
-        "dataType": "json",
-        "success": function (data) {
+  async function event_motion_text() {
+    {% for cam in camera %}
+    $.ajax({
+      
+      "url": "api/text/result/{{cam.id}}",
+      "type": "get",
+      "dataType": "json",
+      "success": function (data) {
+        var len = data.text_rec.lenght;
+        var len_rate = len / 3 * 100;
         
-          $.each(data, function (key, value) {
-            
-            {%for cam in camera %}
-
-            if (key == "{{cam.camera_name}}") {
-              var height = value.HEIGHT;
-              var length = value.LENGTH;
-              
-              // 23 is absolute height value
-              var abs_length = height - length
-              var rate = abs_length / height
-
-              console.log("rate : " + rate + "/ height : " + height + "/ length" + length + "/ abs_length" + abs_length);
-              $("#line{{cam.id}}").attr('aria-valuenow', rate).css('width', rate + '%');
-            } 
-            {% endfor %}
-          });
-        },
-        "error": function (info, xhr) {
-          if (info.readyState == '4') {
-            ///alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
-          } else {
-            /// alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
-          }
+        $('#text{{cam.id}}').attr('area-valuenow', len_rate).css('width', len_rate + '%');
+      },
+      "error": function (info, xhr) {
+        if (info.readyState == '4') {
+          //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+        } else {
+          //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
         }
-      });
-    }
+      }
+    });
+    {% endfor %}
+  }
+  setInterval(event_motion_text, 10000);
+
+
+  async function event_motion_line() {
+    {% for cam in camera %}
+    $.ajax({
+      
+      "url": "api/line/result/{{cam.id}}",
+      "type": "get",
+      "dataType": "json",
+      "success": function (data) {
+        $('#line{{cam.id}}').attr('area-valuenow', data.LENGTH).css('width', data.LENGTH + '%');
+      },
+      "error": function (info, xhr) {
+        if (info.readyState == '4') {
+          //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+        } else {
+          //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+        }
+      }
+    });
+    {% endfor %}
+  }
   setInterval(event_motion_line, 10000);
   async function event_motion_color() {
     {% for cam in camera %}

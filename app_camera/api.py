@@ -7,7 +7,7 @@ import os
 
 router = Router()
 
-@router.get('/frame/{camera_id}')
+@router.get('/frame/{camera_id}', tags=['camera', 'setting'])
 def get_frame(request, camera_id :int):
     from .apps import AppCameraConfig
     cam_name = CameraSetting.objects.get(id=camera_id).camera_name
@@ -16,7 +16,6 @@ def get_frame(request, camera_id :int):
     for cam, rtsp, name in AppCameraConfig.camera_list:
         if name == cam_name:
             data = cam.q.get()
-    print(data)
     if len(data) == 0 :
         print('camera data missing')
         return {'is_saved' : False}
@@ -31,23 +30,18 @@ def get_frame(request, camera_id :int):
     cv2.imwrite(path, image)
     path = os.path.join(settings.MEDIA_URL, 'capture', f'capture_{data["name"]}.jpg')
     try:
-        print('1')
         obj = CameraCapture.objects
-        print('2')
         sub = obj.filter(camera_id=camera_id)
         if len(sub) == 0:
             raise 'empty query'
         sub.update(
             camera_capture = path
         )
-        print('4')
     except:
-        print('5')
         obj.create(
             camera_id = camera_id,
             camera_capture = path,
         )
-        print('6')
     info = dict()
     info['is_saved'] = True
     
@@ -55,13 +49,13 @@ def get_frame(request, camera_id :int):
     return info
 
 
-@router.get('/check_time')
+@router.get('/check_time', tags=['camera', 'setting'])
 def get_frame_check_time(request):
     from .apps import AppCameraConfig
     check_time = AppCameraConfig.check_time
     return {'check_time': check_time}
 
-@router.post('/check_time/{check_time}')
+@router.post('/check_time/{check_time}', tags=['camera', 'setting'])
 def set_frame_check_time(request, check_time:int):
     from .apps import AppCameraConfig
     AppCameraConfig.check_time = check_time

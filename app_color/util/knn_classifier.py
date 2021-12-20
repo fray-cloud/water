@@ -6,6 +6,8 @@ import operator
 def calculateEuclideanDistance(variable1, variable2, length):
     distance = 0
     for x in range(length):
+        if x<0:
+            print(x)
         distance += pow(variable1[x] - variable2[x], 2)
     return math.sqrt(distance)
 
