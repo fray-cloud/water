@@ -46,7 +46,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <p class="card-title mt-2 mb-0">이벤트 정보</p>
-                            <button class="btn btn-inverse-info btn-sm mb-2">수정</button>
+                            <button class="btn btn-inverse-info btn-sm mb-2" onclick="location.href='{% url 'app_event:event_interval' camera.id %}'">수정</button>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover">
@@ -60,17 +60,17 @@
                                 <tbody>
                                     <tr>
                                         <th>선</th>
-                                        <th>{{interval.line_interval}} 초</th>
+                                        <th id="interval_line"></th>
                                         <th><label class="badge badge-info m-0">'</label></th>
                                     </tr>
                                     <tr>
                                         <th>색상</th>
-                                        <th>{{interval.color_interval}} 초</th>
+                                        <th id="interval_color"></th>
                                         <th><label class="badge badge-info m-0">'</label></th>
                                     </tr>
                                     <tr>
                                         <th>문자</th>
-                                        <th>{{interval.text_interval}} 초</th>
+                                        <th id="interval_text"></th>
                                         <th><label class="badge badge-info m-0">'</label></th>
                                     </tr>
                                 </tbody>
@@ -94,7 +94,7 @@
                                 <button class="btn btn-outline-secondary btn-sm" id="line_form">색상</button>
                                 <button class="btn btn-outline-secondary btn-sm" id="text_form">문자</button>
                             </div>
-                            <button class="btn btn-inverse-info btn-sm mb-2">수정</button>
+                            <button class="btn btn-inverse-info btn-sm mb-2" id="roi">수정</button>
                         </div>
                         <img src="{{media.camera_capture}}" class="img-fluid" alt="roi">
                         <div class="table table-hover">
@@ -108,9 +108,9 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th>({{roi.roi_x}},{{roi.roi_y}})</th>
-                                        <th>{{roi.roi_w}}</th>
-                                        <th>{{roi.roi_h}}</th>
+                                        <th id="roi_xy">(,)</th>
+                                        <th id="roi_w"></th>
+                                        <th id="roi_h"></th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -125,4 +125,127 @@
 {% endblock content %}
 
 {% block javascripts %}
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript">    
+    console.log("'start'");
+    $(function(){
+        
+        $.ajax({
+            "url": "{% url 'api-1.0.0:interval' camera.id %}",
+            "type": "get",
+            "dataType": "json",
+            "success": function (data) {
+                var line = data.line_interval;
+                var color = data.color_interval;
+                var text = data.text_interval;
+                
+                $("#interval_line").text(line + "초");
+                $("#interval_color").text(color + "초");
+                $("#interval_text").text(text + "초");
+                
+              },
+              "error": function (info, xhr) {
+                if (info.readyState == '4') {
+                  //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+                } else {
+                  //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+                }
+              }
+        });
+    });
+    $("#color_form").click(function(){
+        $.ajax({
+            "url": "{% url 'api-1.0.0:color_roi' camera.id 'red' %}",
+            "type": "get",
+            "dataType": "json",
+            "success": function (data) {
+                var x = data.color_x;
+                var y = data.color_y;
+                var w = data.color_w;
+                var h = data.color_h;
+                change_text(x,y,w,h);
+              },
+              "error": function (info, xhr) {
+                if (info.readyState == '4') {
+                  //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+                } else {
+                  //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+                }
+              }
+        });
+        $(this).data('clicked', true);
+        $("#line_form").data('clicked', false);
+        $("#text_form").data('clicked', false);
+        
+    });
+    $("#line_form").click(function(){
+        $.ajax({
+            "url": "{% url 'api-1.0.0:line_roi' camera.id %}",
+            "type": "get",
+            "dataType": "json",
+            "success": function (data) {
+                var x = data.line_x;
+                var y = data.line_y;
+                var w = data.line_w;
+                var h = data.line_h;
+                change_text(x,y,w,h);
+              },
+              "error": function (info, xhr) {
+                if (info.readyState == '4') {
+                  //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+                } else {
+                  //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+                }
+              }
+        });
+        $(this).data('clicked', true);
+        $("#color_form").data('clicked', false);
+        $("#text_form").data('clicked', false);
+    });
+    $("#text_form").click(function(){
+        $.ajax({
+            "url": "{% url 'api-1.0.0:text_roi' camera.id %}",
+            "type": "get",
+            "dataType": "json",
+            "success": function (data) {
+                var x = data.text_x;
+                var y = data.text_y;
+                var w = data.text_w;
+                var h = data.text_h;
+                change_text(x,y,w,h);
+              },
+              "error": function (info, xhr) {
+                if (info.readyState == '4') {
+                  //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+                } else {
+                  //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+                }
+              }
+        });
+        $(this).data('clicked', true);
+        $("#color_form").data('clicked', false);
+        $("#line_form").data('clicked', false);
+    });
+
+        $("#roi").click(function(){
+        if ($("#color_form").data('clicked')) {
+            {% comment %} location.href = "{% url 'app_event:event_color' camera.id %}";  {% endcomment %}
+        }
+        else if ($("#line_form").data('clicked')) {
+            {% comment %} location.href = "{% url 'app_event:event_line' camera.id %}";  {% endcomment %}
+        }
+        else if ($("#text_form").data('clicked')) {
+            location.href = "{% url 'app_event:event_text' camera.id %}";
+        } else {
+
+        }
+    });
+
+    function change_text(x, y, w, h){
+        $("#roi_xy").text("("+ x + "," + y + ")");
+        $("#roi_w").text(w);
+        $("#roi_h").text(h);
+    }
+</script>
+
 {% endblock javascripts %}

@@ -28,7 +28,7 @@ class TextROIControlOut(ModelSchema):
             'text_h',
         ]
 
-@router.get('roi/{camera_id}', tags=['roi', 'text'], response=TextROIControlOut)
+@router.get('roi/{camera_id}', tags=['roi', 'text'], response=TextROIControlOut, url_name='text_roi')
 def get_text_roi_control(request, camera_id:int):
     query = get_object_or_404(TextROIControl, camera_id=camera_id)
     return query

@@ -29,7 +29,7 @@ class ColorROIControlOut(ModelSchema):
             'color_h',
         ]
 
-@router.get('roi/{camera_id}/{color}', tags=['roi', 'color'], response=ColorROIControlOut)
+@router.get('roi/{camera_id}/{color}', tags=['roi', 'color'], response=ColorROIControlOut, url_name='color_roi')
 def get_color_roi_control(request, camera_id:int, color:str):
     query = get_object_or_404(ColorROIControl, camera_id=camera_id, color_select=color)
     return query

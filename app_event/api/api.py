@@ -33,7 +33,7 @@ class IntervalControlOut(ModelSchema):
             'text_interval',
         ]
 
-@router.get('interval/{camera_id}', tags=['setting'], response=IntervalControlOut)
+@router.get('interval/{camera_id}', tags=['setting'], response=IntervalControlOut, url_name='interval')
 def get_interval_control(request, camera_id:int):
     try:
         query = get_object_or_404(IntervalControl, camera_id=camera_id)

@@ -13,25 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
 from django.contrib import admin
 from django.urls import path
-from django.urls.conf import include
-from app_dashboard.views import dashboard
-from .api import api
-from django.conf.urls.static import static
+
+from .views.update.interval import IntervalUpdateView
+from .views.update.text import TextROIControlUpdateView
+
+app_name = 'app_event'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', api.urls),
-    path('settings/', include('app_camera.urls')),
-    path('settings/', include('app_event.urls')),
-    path('', dashboard, name='dashboard'),
-    # TODO update list
-    # path('detect/', include('app_color.urls')),
-    # path('detect/', include('app_line.urls')),
-    # path('detect/', include('app_pattren.urls')),
-    # path('detect/', include('app_text.urls')),
+    path('interval/<int:camera_id>', IntervalUpdateView.as_view(), name='event_interval'),
+    path('text/<int:camera_id>', TextROIControlUpdateView.as_view(), name='event_text'),
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

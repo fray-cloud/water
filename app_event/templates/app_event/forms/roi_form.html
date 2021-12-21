@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">카메라 정보</h4>
+                <p class="card-description">
+                    {{ info }}
+                </p>
+                <form class="forms-sample" method="POST">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for field in form %}
+                            {% if field.errors %}
+                                <strong>{{ field.label }}</strong>
+                                {{ field.errors }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% for field in form.hidden_fields %}
+                    {{field}}
+                    {% endfor %}
+                    <div class="container-fluid p-0" id="div_canvas">
+                        <canvas id="canvas" alt="roi">
+                        </canvas>
+                    </div>
+                    
+                    
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{field.errors}}
+                        {{field.label_tag}}{{field}}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript">
+    
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = $("#div_canvas").width();
+    canvas.height = $("#div_canvas").height();
+    $(window).resize(function(){
+        console.log($("#div_canvas").width());
+        canvas.width = $("#div_canvas").width();
+        
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    });
+    var img = new Image();
+    
+ 
+    img.src = "{{media.camera_capture}}";
+    
+    
+
+
+    
+</script>
+
+{% endblock javascripts %}

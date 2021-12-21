@@ -2,9 +2,9 @@ from django.db import models
 
 
 interval_choice = [
-    (10000.0, "10sec"),
-    (30000.0, "30sec"),
-    (60000.0, "60sec")
+    (10.0, "10sec"),
+    (30.0, "30sec"),
+    (60.0, "60sec")
 ]
 
 color_choice = [
@@ -21,27 +21,27 @@ ksize_choice = [
 
 # Create your models here.
 class IntervalControl(models.Model):
-    camera = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
+    camera         = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
     color_interval = models.FloatField(choices=interval_choice, default=interval_choice[0][0])
-    line_interval = models.FloatField(choices=interval_choice, default=interval_choice[0][0])
-    text_interval = models.FloatField(choices=interval_choice, default=interval_choice[0][0])
+    line_interval  = models.FloatField(choices=interval_choice, default=interval_choice[0][0])
+    text_interval  = models.FloatField(choices=interval_choice, default=interval_choice[0][0])
  
 class ColorROIControl(models.Model):
-    camera = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
+    camera       = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
     color_select = models.TextField(choices=color_choice)
-    color_x = models.IntegerField(default=0)
-    color_y = models.IntegerField(default=0)
-    color_w = models.IntegerField(default=200)
-    color_h = models.IntegerField(default=200)
+    color_x      = models.IntegerField(default=0)
+    color_y      = models.IntegerField(default=0)
+    color_w      = models.IntegerField(default=200)
+    color_h      = models.IntegerField(default=200)
 
 class LineParamControl(models.Model):
-    camera = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
-    line_gaussian_ksize = models.IntegerField(default=ksize_choice[0][0], choices=ksize_choice)
-    line_gaussian_sigmaX = models.IntegerField(default=0)
-    line_canny_threashold1 = models.IntegerField(default=50)
-    line_canny_threashold2 = models.IntegerField(default=100)
-    line_theta = models.IntegerField(default=0)
-    line_hough_threshold = models.IntegerField(default=50)
+    camera                   = models.ForeignKey('app_camera.CameraSetting', on_delete=models.CASCADE, verbose_name='카메라 아이디')
+    line_gaussian_ksize      = models.IntegerField(default=ksize_choice[0][0], choices=ksize_choice)
+    line_gaussian_sigmaX     = models.IntegerField(default=0)
+    line_canny_threashold1   = models.IntegerField(default=50)
+    line_canny_threashold2   = models.IntegerField(default=100)
+    line_theta               = models.IntegerField(default=0)
+    line_hough_threshold     = models.IntegerField(default=50)
     line_hough_minLineLength = models.IntegerField(default=2)
 
 class LineROIControl(models.Model):

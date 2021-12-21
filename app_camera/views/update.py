@@ -7,7 +7,7 @@ class CameraUpdateView(UpdateView):
     model = CameraSetting
     context_object_name = 'camera'
     form_class = CameraForm
-    template_name = 'app_camera/camera_form.html'
+    template_name = 'app_camera/form.html'
     
     def get_success_url(self):
         return resolve_url('app_camera:camera_detail', self.kwargs['pk'])

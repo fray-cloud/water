@@ -1,7 +1,7 @@
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
-from django.http.response import JsonResponse
 from ..models import CameraSetting, CameraCapture
+from app_event.models import IntervalControl, ColorROIControl, LineROIControl, TextROIControl
 
 class CameraDetailView(DetailView):
     model = CameraSetting
@@ -16,6 +16,8 @@ class CameraDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CameraDetailView, self).get_context_data(**kwargs)
         context['media'] = get_object_or_404(CameraCapture, pk=self.kwargs['pk'])
-        # context['roi'] = get_object_or_404(ROIControl, pk=self.kwargs['pk'])
+        # context['color_roi'] = get_object_or_404(ColorROIControl, pk=self.kwargs['pk'])
+        # context['line_roi'] = get_object_or_404(LineROIControl, pk=self.kwargs['pk'])
+        # context['text_roi'] = get_object_or_404(TextROIControl, pk=self.kwargs['pk'])
         # context['interval'] = get_object_or_404(IntervalControl, pk=self.kwargs['pk'])
         return context

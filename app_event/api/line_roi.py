@@ -30,7 +30,7 @@ class LineROIControlOut(ModelSchema):
             'line_h',
         ]
 
-@router.get('roi/{camera_id}', tags=['roi', 'line'], response=LineROIControlOut)
+@router.get('roi/{camera_id}', tags=['roi', 'line'], response=LineROIControlOut, url_name='line_roi')
 def get_line_roi_control(request, camera_id:int):
     query = get_object_or_404(LineROIControl, camera_id=camera_id)
     return query
