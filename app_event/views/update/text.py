@@ -6,9 +6,9 @@ from ...models import TextROIControl
 class TextROIControlUpdateView(UpdateView):
     from ..forms.text import TextROIControlForm
     model = TextROIControl
-    context_object_name = 'interval'
+    context_object_name = 'text'
     form_class = TextROIControlForm
-    template_name = 'app_event/forms/roi_form.html'
+    template_name = 'app_event/forms/roi_form_text.html'
     
     def get_object(self):
         object = get_object_or_404(TextROIControl, camera_id=self.kwargs['camera_id'])

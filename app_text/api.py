@@ -44,5 +44,16 @@ def get_text_result(request, camera_id:int):
     roi = roi_control.text_x, roi_control.text_y, roi_control.text_w, roi_control.text_h
 
     JSON = text.text(image, roi)
+    text_list = JSON['text_rec']
+    text_str = ','.join(text_list)
+
+
+    # log save
+    from app_log.models import TextLog
+    log = TextLog.objects
+    log.create(
+        camera_id = camera_id,
+        texts = text_str
+    )
 
     return JSON

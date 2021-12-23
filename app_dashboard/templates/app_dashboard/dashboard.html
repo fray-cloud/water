@@ -70,7 +70,7 @@
                   </div>
                   <div class="col-md-6 mt-2">
                     <div class="progress">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="0"
+                      <div class="progress-bar bg-primary" id="text{{cam.id}}" role="progressbar" style="width: 0%" aria-valuenow="0"
                         aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
@@ -102,95 +102,20 @@
 <script type="text/javascript">
   function event_ping(){
     {% for cam in camera %}
-      {% if cam.cam_alive == 1 %}
-        if ($("#alive{{cam.id}}").hasClass("mdi mdi-camcorder-off") == 1){
-         $("#alive{{cam.id}}").removeClass("mdi mdi-camcorder-off").addClass("mdi mdi-camcorder");
-        }
-
-      {% else %}
-        if ($("#alive{{cam.id}}").hasClass("mdi mdi-camcorder") == 1){
-         $("#alive{{cam.id}}").removeClass("mdi mdi-camcorder").addClass("mdi mdi-camcorder-off");
-        }
-
-      {% endif %}
-    {% endfor %}
-  }
-  setInterval(event_ping, 10000);
-
-  async function event_motion_text() {
-    {% for cam in camera %}
-    $.ajax({
-      
-      "url": "api/text/result/{{cam.id}}",
-      "type": "get",
-      "dataType": "json",
-      "success": function (data) {
-        var len = data.text_rec.lenght;
-        var len_rate = len / 3 * 100;
-        
-        $('#text{{cam.id}}').attr('area-valuenow', len_rate).css('width', len_rate + '%');
-      },
-      "error": function (info, xhr) {
-        if (info.readyState == '4') {
-          //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
-        } else {
-          //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
-        }
-      }
-    });
-    {% endfor %}
-  }
-  setInterval(event_motion_text, 10000);
-
-
-  async function event_motion_line() {
-    {% for cam in camera %}
-    $.ajax({
-      
-      "url": "api/line/result/{{cam.id}}",
-      "type": "get",
-      "dataType": "json",
-      "success": function (data) {
-        $('#line{{cam.id}}').attr('area-valuenow', data.LENGTH).css('width', data.LENGTH + '%');
-      },
-      "error": function (info, xhr) {
-        if (info.readyState == '4') {
-          //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
-        } else {
-          //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
-        }
-      }
-    });
-    {% endfor %}
-  }
-  setInterval(event_motion_line, 10000);
-  async function event_motion_color() {
-    {% for cam in camera %}
       $.ajax({
-        
-        "url": "api/color/result/{{cam.id}}",
+        "url": "api/camera/ping/{{cam.id}}",
         "type": "get",
         "dataType": "json",
         "success": function (data) {
-          if ((data.color.red > 0) & (data.color.red <= 3)) {
-            $("#red{{cam.id}}").show();
+          if (data.ping){
+            if ($("#alive{{cam.id}}").hasClass("mdi mdi-camcorder-off") == 1){
+              $("#alive{{cam.id}}").removeClass("mdi mdi-camcorder-off").addClass("mdi mdi-camcorder");
+            }
           }
           else{
-            $("#red{{cam.id}}").hide();
-          }
-
-          if (data.color.green > 0) {
-            $("#green{{cam.id}}").show();
-          }
-          else{
-            $("#green{{cam.id}}").hide();
-          }
-
-          if (data.color.blue > 0) {
-            $("#blue{{cam.id}}").show();
-          }
-          else{
-            $("#blue{{cam.id}}").hide();
+            if ($("#alive{{cam.id}}").hasClass("mdi mdi-camcorder") == 1){
+              $("#alive{{cam.id}}").removeClass("mdi mdi-camcorder").addClass("mdi mdi-camcorder-off");
+            }
           }
         },
         "error": function (info, xhr) {
@@ -201,67 +126,42 @@
           }
         }
       });
-      {% endfor %}
-    }
-  setInterval(event_motion_color, 10000);
-</script>
+    {% endfor %}
+  }
+  setInterval(event_ping, 10000);
 
-
-
-{% comment %} <script type="text/javascript">
-
-  $("#videoElem").width($("#remoteVideos").width());
-
-  $(window).resize(function () {
-    var width = $("#remoteVideos").width();
-    $("#videoElem").width(width);
-  });
-
-  setInterval(event_motion_color, 10000);
-  async function event_motion_color() {
+  async function event_motion_text(id) {
 
     $.ajax({
-      "url": "recognitions/color",
+      
+      "url": "api/text/result/" + id,
       "type": "get",
       "dataType": "json",
       "success": function (data) {
-        
+        var len = data.text_rec.length;
+        var len_rate = len / 3 * 100;
 
-        {%for cam in camera %}
-        
-
-        if ($("#color-bg-danger{{cam.id}}").hasClass("bg-danger") == 1){
-          $("#color-bg-danger{{cam.id}}").removeClass("bg-danger");
+        $('#text' + id).attr('area-valuenow', len_rate).css('width', len_rate + '%');
+      },
+      "error": function (info, xhr) {
+        if (info.readyState == '4') {
+          //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+        } else {
+          //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
         }
-        
-        if ($("#color-bg-success{{cam.id}}").hasClass("bg-success") == 1){
-        $("#color-bg-success{{cam.id}}").removeClass("bg-success");
-        }
+      }
+    });
 
-        if ($("#color-bg-info{{cam.id}}").hasClass("bg-info") == 1){
-        $("#color-bg-info{{cam.id}}").removeClass("bg-info");
-        }
+  }
 
-        {% endfor %}
-        $.each(data, function (key, value) {
-          {%for cam in camera %}
-          if (key == "{{cam.camera_name}}") {
-            if ((value.color.red > 0) & (value.color.red <= 3)) {
-              str = "경고 ";
-              $("#color-bg-danger{{cam.id}}").addClass("bg-danger");
-            }
-            if (value.color.green > 0) {
-              str = "보통 ";
-              $("#color-bg-success{{cam.id}}").addClass("bg-success");
-            }
-            if (value.color.blue > 0) {
-              str = "안전 ";
-              $("#color-bg-info{{cam.id}}").addClass("bg-info");
-            }
-          } 
-          {% endfor %}
-
-        });
+  async function event_motion_line(id) {
+    $.ajax({
+      
+      "url": "api/line/result/" + id,
+      "type": "get",
+      "dataType": "json",
+      "success": function (data) {
+        $('#line' + id).attr('area-valuenow', data.LENGTH).css('width', data.LENGTH + '%');
       },
       "error": function (info, xhr) {
         if (info.readyState == '4') {
@@ -272,325 +172,89 @@
       }
     });
   }
-  setInterval(event_motion_line, 10000);
-  async function event_motion_line() {
-    $.ajax({
-      "url": "recognitions/line",
-      "type": "get",
-      "dataType": "json",
-      "success": function (data) {
-      
-        $.each(data, function (key, value) {
-          /*
-          if ($("#line-bg-danger").hasClass("bg-dark") == 1){
-          $("#line-bg-danger").removeClass("bg-dark");
-          }
-          if ($("#line-bg-danger").hasClass("bg-light") == 1){
-          $("#line-bg-danger").removeClass("bg-light");
-          }
 
-          if ($("#line-bg-success").hasClass("bg-dark") == 1){
-          $("#line-bg-success").removeClass("bg-dark");
-          }
-          if ($("#line-bg-success").hasClass("bg-light") == 1){
-          $("#line-bg-success").removeClass("bg-light");
-          }
-
-          if ($("#line-bg-info").hasClass("bg-dark") == 1){
-          $("#line-bg-info").removeClass("bg-dark");
-          }
-          if ($("#line-bg-info").hasClass("bg-light") == 1){
-          $("#line-bg-info").removeClass("bg-light");
-          }
-          */
-          {%for cam in camera %}
-
-          if (key == "{{cam.camera_name}}") {
-            var height = value.HEIGHT;
-            var length = value.AVG;
-            
-            // 23 is absolute height value
-            var abs_length = 23 * length / height;
-            var abs_height = 23 - abs_length;
-            console.log("height : " + height + "  length : " + length + "  abs_length : " + abs_length);
-            $("#line-bg-info").html(parseInt(abs_height));
-
-            /*
-            if((height - length) / height < 0.33){
-              $("#line-bg-info").addClass("bg-dark");
-              $("#line-bg-success").addClass("bg-light");
-              $("#line-bg-danger").addClass("bg-light");
-            }
-            else if(((height - length) / height >= 0.33) & ((height - length) / height < 0.66)){
-              $("#line-bg-info").addClass("bg-dark");
-              $("#line-bg-success").addClass("bg-dark");
-              $("#line-bg-danger").addClass("bg-light");
-            }
-            else if((height - length) / height >= 0.66){
-              $("#line-bg-info").addClass("bg-dark");
-              $("#line-bg-success").addClass("bg-dark");
-              $("#line-bg-danger").addClass("bg-dark");
-            }
-            */
-
-          } 
-          {% endfor %}
-        });
-      },
-      "error": function (info, xhr) {
-        if (info.readyState == '4') {
-          ///alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
-        } else {
-          /// alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
-        }
-      }
-    });
-  }
-  setInterval(event_motion_text, 10000);
-  async function event_motion_text() {
-    $("#text_event_{{cam.camera_name}}").html("");
-    $.ajax({
-      "url": "recognitions/text",
-      "type": "get",
-      "dataType": "json",
-      "success": function (data) {
-        {%for cam in camera %}
-        if ($("#text-bg-danger{{cam.id}}").hasClass("bg-dark") == 1){
-        $("#text-bg-danger{{cam.id}}").removeClass("bg-dark");
-        }
-        if ($("#text-bg-danger{{cam.id}}").hasClass("bg-light") == 1){
-        $("#text-bg-danger{{cam.id}}").removeClass("bg-light");
-        }
-
-        if ($("#text-bg-success{{cam.id}}").hasClass("bg-dark") == 1){
-        $("#text-bg-success{{cam.id}}").removeClass("bg-dark");
-        }
-        if ($("#text-bg-success{{cam.id}}").hasClass("bg-light") == 1){
-        $("#text-bg-success{{cam.id}}").removeClass("bg-light");
-        }
-
-        if ($("#text-bg-info{{cam.id}}").hasClass("bg-dark") == 1){
-        $("#text-bg-info{{cam.id}}").removeClass("bg-dark");
-        }
-        if ($("#text-bg-info{{cam.id}}").hasClass("bg-light") == 1){
-        $("#text-bg-info{{cam.id}}").removeClass("bg-light");
-        }
-        {% endfor %}
+  async function event_motion_color(id) {
+      $.ajax({
         
-
-        $.each(data, function (key, value) {
-
-
-          {%for cam in camera %}
-          if (key == "{{cam.camera_name}}") {
-            if(($.inArray("0", value.text_rec) != -1) | ($.inArray("O", value.text_rec) != -1)){
-               $("#text-bg-info{{cam.id}}").addClass("bg-light");
-            }
-            else{
-              $("#text-bg-info{{cam.id}}").addClass("bg-dark");
-            }
-
-            if($.inArray("12", value.text_rec) != -1){
-              $("#text-bg-success{{cam.id}}").addClass("bg-light");
-            }
-            else{
-              $("#text-bg-success{{cam.id}}").addClass("bg-dark");
-            }
-
-            if($.inArray("25", value.text_rec) != -1){
-              $("#text-bg-danger{{cam.id}}").addClass("bg-light");
-            }
-            else{
-              $("#text-bg-danger{{cam.id}}").addClass("bg-dark");
-            }
+        "url": "api/color/result/" + id,
+        "type": "get",
+        "dataType": "json",
+        "success": function (data) {
+          if ((data.color.red > 0) & (data.color.red <= 3)) {
+            $("#red" + id).show();
           }
-          {% endfor %}
-
-          {%for cam in camera %}
-          if (key == "{{cam.camera_name}}") {
-            if(($.inArray("0", value.text_rec) != -1) | ($.inArray("O", value.text_rec) != -1)){
-               $("#text-bg-info{{cam.id}}").removeClass("bg-dark");
-               $("#text-bg-info{{cam.id}}").addClass("bg-light");
-            }
-            else{
-              setTimeout(function(){
-                $("#text-bg-info{{cam.id}}").addClass("bg-dark");
-              }, 3000);
-              
-            }
-
-            if($.inArray("12", value.text_rec) != -1){
-              $("#text-bg-success{{cam.id}}").removeClass("bg-dark");
-              $("#text-bg-success{{cam.id}}").addClass("bg-light");
-            }
-            else{
-              setTimeout(function(){
-                $("#text-bg-success{{cam.id}}").addClass("bg-dark");
-              }, 2000);
-              
-            }
-
-            if($.inArray("25", value.text_rec) != -1){
-              $("#text-bg-danger{{cam.id}}").removeClass("bg-dark");
-              $("#text-bg-danger{{cam.id}}").addClass("bg-light");
-            }
-            else{
-              setTimeout(function(){
-                $("#text-bg-danger{{cam.id}}").addClass("bg-dark");
-              }, 2500);
-              
-            }
+          else{
+            $("#red" + id).hide();
           }
-          {% endfor %}
 
+          if (data.color.green > 0) {
+            $("#green" + id).show();
+          }
+          else{
+            $("#green" + id).hide();
+          }
 
-        });
-      },
-      "error": function (info, xhr) {
-        if (info.readyState == '4') {
-          /// alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
-        } else {
-          /// alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+          if (data.color.blue > 0) {
+            $("#blue" + id).show();
+          }
+          else{
+            $("#blue" + id).hide();
+          }
+        },
+        "error": function (info, xhr) {
+          if (info.readyState == '4') {
+            //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
+          } else {
+            //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
+          }
         }
-      }
-    });
-  }
-</script>
+      });
+    }
 
-<script src="{% static 'js/adapter-latest.js' %}"></script>
-<script type="text/javascript">
-  let stream = new MediaStream();
-  let suuid = $('#suuid').val();
-
-  let config = {
-    iceServers: [{
-      urls: ["stun:stun.l.google.com:19302"]
-    }]
-  };
-
-  const pc = new RTCPeerConnection(config);
-  pc.onnegotiationneeded = handleNegotiationNeededEvent;
-
-  let log = msg => {
-    // document.getElementById('div').innerHTML += msg + '<br>'
-  }
-
-  pc.ontrack = function (event) {
-    stream.addTrack(event.track);
-    videoElem.srcObject = stream;
-    log(event.streams.length + ' track is delivered')
-  }
-
-  pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
-
-  async function handleNegotiationNeededEvent() {
-    let offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    getRemoteSdp();
-  }
-
-  $(document).ready(function () {
-    $('#' + suuid).addClass('active');
-    getCodecInfo();
-  });
-
-
-  function getCodecInfo() {
-    $.get("http://127.0.0.1:8083/stream/codec/" + suuid, function (data) {
-      try {
-        data = JSON.parse(data);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        $.each(data, function (index, value) {
-          pc.addTransceiver(value.Type, {
-            'direction': 'sendrecv'
-          })
-        })
-      }
-    });
-  }
-
-  let sendChannel = null;
-
-  function getRemoteSdp() {
-    $.post("http://127.0.0.1:8083/stream/receiver/" + suuid, {
-      suuid: suuid,
-      data: btoa(pc.localDescription.sdp)
-    }, function (data) {
-      try {
-        pc.setRemoteDescription(new RTCSessionDescription({
-          type: 'answer',
-          sdp: atob(data)
-        }))
-      } catch (e) {
-        console.warn(e);
-      }
-    });
-  }
-</script>
-<script type="text/javascript">
-  setInterval(event_color_log, 10000);
-  async function event_color_log() {
+  
+    function getInterval(id){
+    var get_data ;
     $.ajax({
-      "url": "log/color_log",
+      
+      "url": "api/event/interval/" + id,
       "type": "get",
       "dataType": "json",
+      "async": false,
       "success": function (data) {
-        var colorOptions = {
-          plugins: {
-            filler: {
-              propagate: true
-            }
-          }
-        }
-        var colorChartCanvas = $("#colorChart").get(0).getContext("2d");
-        var colorChart = new Chart(colorChartCanvas, {
-          type: 'line',
-          data: data,
-          options: colorOptions
-        });
+        get_data = data;
       },
       "error": function (info, xhr) {
         if (info.readyState == '4') {
-
+          //alert('문제가 발생했습니다.\n상태코드 : ' + info.status+ '\n\n' + info.responseText);
         } else {
-
+          //alert('문제가 발생했습니다.\n잠시후 다시 시도해 주세요.\n 상태코드 : ' +info.status);
         }
       }
     });
+    return get_data;
   }
 
-  setInterval(event_line_log, 10000);
-  async function event_line_log() {
-    $.ajax({
-      "url": "log/line_log",
-      "type": "get",
-      "dataType": "json",
-      "success": function (data) {
-        var lineOptions = {
-          plugins: {
-            filler: {
-              propagate: true
-            }
-          }
-        }
-        var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
-        var lineChart = new Chart(lineChartCanvas, {
-          type: 'line',
-          data: data,
-          options: lineOptions
-        });
-      },
-      "error": function (info, xhr) {
-        if (info.readyState == '4') {
-
-        } else {
-
-        }
-      }
-    });
+  function interval(){
+    {% for cam in camera %}
+    var id = {{cam.id}};
+    var get_data = getInterval(id);
+    console.log(get_data);
+    var interval_time_text = get_data.text_interval;
+    setInterval(event_motion_text, interval_time_text * 1000, id);
+    var interval_time_line = get_data.line_interval;
+    setInterval(event_motion_line, interval_time_line * 1000, id);
+    var interval_time_color = get_data.color_interval;
+    setInterval(event_motion_color, interval_time_color * 1000, id);
+    {% endfor %}
   }
-</script> {% endcomment %}
+  
+  interval();
+
+</script>
+
+<script type="text/javascript">
+
+</script>
+
 
 {% endblock javascripts %}

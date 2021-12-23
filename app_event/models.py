@@ -1,5 +1,5 @@
 from django.db import models
-
+# 초기 defalut 설정은 임의 설정
 
 interval_choice = [
     (10.0, "10sec"),

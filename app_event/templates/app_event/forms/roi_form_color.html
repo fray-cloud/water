@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-body" id="card_body">
+                <h4 class="card-title">카메라 정보</h4>
+                <p class="card-description">
+                    {{ info }}
+                </p>
+                <form class="forms-sample" method="POST">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for field in form %}
+                            {% if field.errors %}
+                                <strong>{{ field.label }}</strong>
+                                {{ field.errors }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% for field in form.hidden_fields %}
+                    {{field}}
+                    {% endfor %}
+                    <canvas id="canvas" alt="roi">
+                    </canvas>
+                    
+                    
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {{field.errors}}
+                        {{field.label_tag}}{{field}}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript">
+    
+    {% comment %}
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = $("#div_canvas").width();
+        canvas.height = $("#div_canvas").height();
+        var img = new Image();
+        img.src = "{{media.camera_capture}}";
+
+        $(window).ready(function(){
+            var img = new Image();
+            img.src = "{{media.camera_capture}}";
+            console.log($("#div_canvas").width());
+            canvas.width = $("#div_canvas").width();
+            
+            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        });
+
+        $(window).resize(function(){
+            console.log($("#div_canvas").width());
+            canvas.width = $("#div_canvas").width();
+            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+        }); 
+    {% endcomment %}
+    
+    var canvas = document.querySelector('canvas');
+    var ctx = canvas.getContext('2d');
+    var src = "{{media.camera_capture}}";
+
+    var image = new Image();
+    image.src = src;
+
+    var defaultImageWidth = image.width;
+    var defaultImageHeight = image.height;
+
+    function addToCanvas(canvas, ctx, src, x, y, w){
+        var imageRate = defaultImageHeight / defaultImageWidth;
+        canvas.width = w;
+        canvas.height = imageRate * w;
+
+        image.width = canvas.width;
+        image.height = canvas.height;
+        ctx.drawImage(image, x, y, image.width, image.height);
+    };
+
+    image.onload = function(){
+        w = $("#card_body").width();
+        addToCanvas(canvas, ctx, src, 0, 0, w);
+        var sx = ;
+        var sy = ;
+        var sw = ;
+        var sh = ;
+        var cw = sx + sw ;
+        var ch = sy + sh ;
+        draw(sx, sy, cw, ch);
+    };
+
+    
+    $(window).resize(function(){
+        w = $("#card_body").width();
+        addToCanvas(canvas, ctx, src, 0, 0, w);
+    });
+    
+    canvas.addEventListener("mousemove", function (e) { move(e) }, false);
+    canvas.addEventListener("mousedown", function (e) { down(e) }, false);
+    canvas.addEventListener("mouseup", function (e) { up(e) }, false);
+    canvas.addEventListener("mouseout", function (e) { out(e) }, false);
+
+    var startX=0, startY=0; // 드래깅동안, 처음 마우스가 눌러진 좌표
+    var curX = 0, curY = 0;
+    var drawing=false;
+
+    function draw(startX, startY, curX, curY) {
+        w = $("#card_body").width();
+        addToCanvas(canvas, ctx, src, 0, 0, w);
+        ctx.beginPath();
+        // context.moveTo(startX, startY);
+        // context.lineTo(curX, curY);
+        ctx.strokeRect(startX, startY, curX, curY);
+        ctx.stroke();
+    
+    }
+
+    function up(e) { drawing = false; }
+    function out(e) { drawing = false; }
+    
+    function move(e) {
+        if(!drawing) return; // 마우스가 눌러지지 않았으면 리턴
+        curX = e.offsetX, curY = e.offsetY;
+        ctx.clearRect(startX, startY, curX + startX, curY + startY);
+        draw(startX, startY, curX - startX, curY - startY);
+
+        var widthRate = defaultImageWidth / canvas.width;
+        var heightRate = defaultImageHeight / canvas.height;
+
+        var x = startX * widthRate;
+        var y = startY * heightRate;
+        var w = ((curX - startX) * widthRate);
+        var h = ((curY - startY) * heightRate);
+
+        var elem_x = "input[name=text_x]";
+        var elem_y = "input[name=text_y]";
+        var elem_w = "input[name=text_w]";
+        var elem_h = "input[name=text_h]";
+
+        if($(".parent input").is())
+    
+        $(elem_x).val(String(parseInt(x)));
+        $(elem_y).val(String(parseInt(y)));
+        $(elem_w).val(String(parseInt(w)));
+        $(elem_h).val(String(parseInt(h)));
+        // startX = curX; startY = curY;
+    
+    }
+
+    function down(e) {
+        startX=0, startY=0;
+        ctx.clearRect(startX, startY, canvas.width, canvas.height);
+        w = $("#card_body").width();
+        addToCanvas(canvas, ctx, src, 0, 0, w);
+        startX = e.offsetX; startY = e.offsetY;
+        drawing = true;
+    }
+
+    
+</script>
+
+{% endblock javascripts %}

@@ -53,4 +53,12 @@ def get_line_result(request, camera_id:int):
     param = param[0]
     JSON = Line.main(image, roi, (param.line_gaussian_ksize, param.line_gaussian_ksize), param.line_gaussian_sigmaX, param.line_canny_threashold1, param.line_canny_threashold2, param.line_theta, param.line_hough_threshold, param.line_hough_minLineLength) 
 
+    # log save
+    from app_log.models import LineLog
+    log = LineLog.objects
+    log.create(
+        camera_id = camera_id,
+        length = JSON['LENGTH'],
+    )
+
     return JSON

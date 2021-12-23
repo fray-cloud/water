@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'app_color.apps.AppColorConfig',
     'app_line.apps.AppLineConfig',
     'app_text.apps.AppTextConfig',
+    'app_log.apps.AppLogConfig',
 
     # install
     'ninja',

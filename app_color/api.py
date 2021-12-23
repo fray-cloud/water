@@ -47,5 +47,16 @@ def get_color_result(request, camera_id:int):
         roi_list.append((roi.color_x, roi.color_y, roi.color_w, roi.color_h))
     
     JSON = color.color(image, roi_list)
+
+    # log save
+    from app_log.models import ColorLog
+    log = ColorLog.objects
+    log.create(
+        camera_id = camera_id,
+        red = JSON['color']['red'],
+        green = JSON['color']['green'],
+        blue = JSON['color']['blue'],
+    )
+
     return JSON
 

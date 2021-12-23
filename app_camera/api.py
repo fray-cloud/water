@@ -61,3 +61,11 @@ def set_frame_check_time(request, check_time:int):
     AppCameraConfig.check_time = check_time
 
     return {'set_check_time' : 'success'}
+
+@router.get('/ping/{camera_id}')
+def get_ping(request, camera_id:int):
+    from .apps import AppCameraConfig
+    ping = AppCameraConfig.ping
+    camera = CameraSetting.objects.get(id=camera_id)
+    ping = ping[camera.camera_name]
+    return {'ping': ping}

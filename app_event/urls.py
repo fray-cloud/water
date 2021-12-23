@@ -18,10 +18,12 @@ from django.urls import path
 
 from .views.update.interval import IntervalUpdateView
 from .views.update.text import TextROIControlUpdateView
+from .views.update.line import LineROIControlUpdateView
 
 app_name = 'app_event'
 
 urlpatterns = [
     path('interval/<int:camera_id>', IntervalUpdateView.as_view(), name='event_interval'),
     path('text/<int:camera_id>', TextROIControlUpdateView.as_view(), name='event_text'),
+    path('line/<int:camera_id>', LineROIControlUpdateView.as_view(), name='event_line'),
 ]

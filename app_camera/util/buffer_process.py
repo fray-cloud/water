@@ -3,6 +3,21 @@ import cv2
 import numpy as np
 
 class Streaming:
+    """
+    멀티 프로세스 기반으로 while 문을 반복하여 큐로 프레임 send 하는 기능
+    1. start
+        큐 및 프로세스 객체 생성 -> 프로세스 시작
+        인스턴스 생성 후 self.q 를 통해 q.get 으로 프레임 출력
+
+    2. stream
+        멀티프로세스 내부에 target 하여 돌아가게끔 설정
+    
+    3. end
+        큐 및 프로세스 멈추는 기능
+    
+    4. restart
+        프로세싱 재시작
+    """
     def __init__(self):
         self.q : mp.Queue
         self.p : mp.Process
