@@ -64,8 +64,9 @@ class AppCameraConfig(AppConfig):
 
                         if not cam.is_start:
                             cam.start(rtsp, name)
-                        
-                        self.ping[name] = cam.is_start
+                            
+                        data = cam.q.get()
+                        self.ping[name] = data['is_alive']
                         
                 # cooltime : defalut 2sec
                 time.sleep(self.check_time)

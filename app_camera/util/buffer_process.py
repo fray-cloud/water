@@ -63,6 +63,7 @@ class Streaming:
                 print(f'rtsp server is broken >> rtsp:{ret}')
                 random_image = np.random.randint(255, size=(height, width), dtype=np.uint8)
                 data['image'] = random_image
+                data['is_alive'] = False
                 q.put(data)
                 cap = cv2.VideoCapture(rtsp)
                 print(f'is refresh >> rtsp:{cap.grab()}')
@@ -74,4 +75,5 @@ class Streaming:
                 print('confirm process')
                 _, frame = cap.retrieve()
                 data['image'] = frame
+                data['is_alive'] = True
                 q.put(data)
